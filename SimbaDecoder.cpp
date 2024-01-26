@@ -38,12 +38,12 @@ std::string SimbaDecoder::DecodePackageToJson(const char* payload, size_t payloa
 
     auto marketHeader = reinterpret_cast<const MarketDataPacketHeader*>(payload);
     int offset = MarketDataPacketHeader::size;
-    json << toJson(marketHeader) << ",";
+    json << marketHeader << ",";
 
     if (marketHeader->msgFlags & MsgFlags::IncrementalPacketFlag) {
         auto incrHeader = reinterpret_cast<const IncrementalPacketHeader*>(payload + offset);
         offset += IncrementalPacketHeader::size;
-        json << toJson(incrHeader) << ",";
+        json << incrHeader << ",";
     }
 
     while (payloadLength - offset >= SBEHeader::size) {
@@ -52,23 +52,25 @@ std::string SimbaDecoder::DecodePackageToJson(const char* payload, size_t payloa
 
         if (!doSbeFilter(sbeHeader)) break;
 
-        json << toJson(sbeHeader) << ", ";
+        json << sbeHeader << ", ";
 
         if (sbeHeader->templateID == 15) { // OrderUpdate
             auto orderUpd = reinterpret_cast<const OrderUpdate*>(payload + offset);
             offset += OrderUpdate::size;
-            json << toJson(orderUpd) << ", ";
+            json << orderUpd << ", ";
         }
         else if (sbeHeader->templateID == 16) { // OrderExecution
             auto orderExe = reinterpret_cast<const OrderExecution*>(payload + offset);
             offset += OrderExecution::size;
-            json << toJson(orderExe) << ", ";
+            json << orderExe << ", ";
         }
         else if (sbeHeader->templateID == 17) { // OrderBookSnapshot
             auto orderBookSnapshot = reinterpret_cast<const OrderBookSnapshot*>(payload + offset);
             offset += OrderBookSnapshot::size;
             auto groupSize = reinterpret_cast<const GroupSize*>(payload + offset);
             offset += GroupSize::size;
+
+            json << orderBookSnapshot;
 
             std::vector<const OrderBookSnapshotEntry*> entries;
             for (size_t i = 0; i < groupSize->numInGroup; ++i) {
@@ -77,7 +79,11 @@ std::string SimbaDecoder::DecodePackageToJson(const char* payload, size_t payloa
                 entries.push_back(entry);
             }
 
-            json << toJson(orderBookSnapshot, entries) << ", ";
+            if (entries.size() != 0){
+                json << entries;
+            }
+
+            json << "}, ";
         }
         else {
             // not implemented

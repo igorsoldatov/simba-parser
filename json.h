@@ -3,34 +3,36 @@
 #include <vector>
 #include "SimbaScheme.h"
 
-std::string toJson(MDFlagsSet flags);
+std::ostream& operator<<(std::ostream& os, MDFlagsSet flags);
 
-std::string toJson(MDFlags2Set flags);
+std::ostream& operator<<(std::ostream& os, MDFlags2Set flags);
 
-std::string toJson(FlagsSet flags);
+std::ostream& operator<<(std::ostream& os, FlagsSet flags);
 
-std::string toJson(MsgFlagsSet flags);
+std::ostream& operator<<(std::ostream& os, MsgFlagsSet flags);
 
-std::string toJson(const Decimal5& decimal);
+std::ostream& operator<<(std::ostream& os, const Decimal5& decimal);
 
-std::string toJson(const Decimal5NULL& decimal);
+std::ostream& operator<<(std::ostream& os, const Decimal5NULL& decimal);
 
-std::string toJson(MDUpdateAction action);
+std::ostream& operator<<(std::ostream& os, MDUpdateAction action);
 
-std::string toJson(MDEntryType entryType);
+std::ostream& operator<<(std::ostream& os, MDEntryType entryType);
 
-std::string toJson(const OrderUpdate* orderUpdate);
+std::ostream& operator<<(std::ostream& os, const OrderUpdate* orderUpdate);
 
-std::string toJson(const OrderExecution* orderExe);
+std::ostream& operator<<(std::ostream& os, const OrderExecution* orderExe);
 
-std::string toJson(const MarketDataPacketHeader* marketHeader);
+std::ostream& operator<<(std::ostream& os, const MarketDataPacketHeader* marketHeader);
 
-std::string toJson(const IncrementalPacketHeader* incrHeader);
+std::ostream& operator<<(std::ostream& os, const IncrementalPacketHeader* incrHeader);
 
-std::string toJson(const SBEHeader* incrHeader);
+std::ostream& operator<<(std::ostream& os, const SBEHeader* incrHeader);
 
-std::string toJson(const OrderBookSnapshotEntry* ordBookEntry);
+std::ostream& operator<<(std::ostream& os, const OrderBookSnapshotEntry* ordBookEntry);
 
-std::string toJson(const OrderBookSnapshot* ordBook, const std::vector<const OrderBookSnapshotEntry*>& entries);
+std::ostream& operator<<(std::ostream& os, const std::vector<const OrderBookSnapshotEntry*>& entries);
 
-std::string toJson(const GroupSize* group);
+std::ostream& operator<<(std::ostream& os, const OrderBookSnapshot* ordBook);
+
+std::ostream& operator<<(std::ostream& os, const GroupSize* group);

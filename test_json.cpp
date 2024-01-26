@@ -14,7 +14,9 @@ TEST(OrderUpdateTest, toJson) {
     orderUpd.mdUpdateAction = MDUpdateAction::New;
     orderUpd.mdEntryType = MDEntryType::Offer;
 
-    const auto& json = toJson(&orderUpd);
+    std::stringstream jsonStream;
+    jsonStream << &orderUpd;
+    const auto& json = jsonStream.str();
     const auto& jsonReference = R"({"mdEntryID": 684651487496, "mdEntryPx": {"mantissa": 16846541657}, "mdEntrySize": 256, "mdFlags": ["day", "cod", "duringDiscreteAuction"], "mdFlags2": ["zero"], "securityID": 456, "rptSeq": 564846, "mdUpdateAction": "New", "mdEntryType": "Offer"})";
 
     EXPECT_EQ(jsonReference, json);
@@ -35,7 +37,9 @@ TEST(OrderExecutionTest, toJson) {
     orderExec.mdUpdateAction = MDUpdateAction::Change;
     orderExec.mdEntryType = MDEntryType::Bid;
 
-    const auto& json = toJson(&orderExec);
+    std::stringstream jsonStream;
+    jsonStream << &orderExec;
+    const auto& json = jsonStream.str();
     const auto& jsonReference = R"({"mdEntryID": 684651487496, "mdEntryPx": {"mantissa": 16846541657}, "mdEntrySize": 256, "lastPx": {"mantissa": 684}, "lastQty": 135, "tradeID": 1368768546874, "mdFlags": ["endOfTransaction", "fok", "cancel", "boc"], "mdFlags2": ["zero"], "securityID": 486, "rptSeq": 564846, "mdUpdateAction": "Change", "mdEntryType": "Bid"})";
 
     EXPECT_EQ(jsonReference, json);
@@ -51,8 +55,25 @@ TEST(OrderBookSnapshotEntryTest, toJson) {
     entry.MDFlags2 = MDFlags2Set::zero;
     entry.MDEntryType = MDEntryType::Bid;
 
-    const auto& json = toJson(&entry);
+    std::stringstream jsonStream;
+    jsonStream << &entry;
+    const auto& json = jsonStream.str();
     const auto& jsonReference = R"({"MDEntryID": 168796846768, "TransactTime": 14757395258967641292, "MDEntryPx": {"mantissa": 16874687}, "MDEntrySize": 256, "TradeID": 1368768546874, "MDFlags": ["fok", "crossTrade"], "MDFlags2": ["zero"], "MDEntryType": "Bid"})";
+
+    EXPECT_EQ(jsonReference, json);
+}
+
+TEST(SBEHeaderTest, toJson) {
+    SBEHeader entry;
+    entry.blockLength = 256;
+    entry.templateID = 17;
+    entry.schemaID = 256;
+    entry.version = 5;
+
+    std::stringstream jsonStrem;
+    jsonStrem << &entry;
+    const auto& json = jsonStrem.str();
+    const auto& jsonReference = R"({"blockLength": 256, "templateID": 17, "schemaID": 256, "version": 5})";
 
     EXPECT_EQ(jsonReference, json);
 }
