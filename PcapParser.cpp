@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cstdint>
 #include <vector>
+#include <chrono>
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -44,13 +45,17 @@ void PcapParser::parseGlobalHeader() {
 void PcapParser::parse() {
     parseGlobalHeader();
 
+    auto start = std::chrono::high_resolution_clock::now();
     int itr = 0;
     while (!file.eof()) {
         parsePacket();
 
         ++itr;
         if (itr % 100000 == 0) {
-            std::cout << "itr=" << itr << std::endl;
+            auto stop = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+            std::cout << "itr=" << itr << " Time taken for 100000 iterations: " << duration.count() << " milliseconds" << std::endl;
+            start = std::chrono::high_resolution_clock::now();
         }
     }
 }
